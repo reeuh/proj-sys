@@ -15,7 +15,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Capstone',
-        href: '#',
+        href: '/students/capstone',
         icon: Folder,
     },
     {
