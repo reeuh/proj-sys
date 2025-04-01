@@ -5,6 +5,7 @@ import { FormEventHandler } from 'react';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
@@ -14,14 +15,18 @@ type RegisterForm = {
     email: string;
     password: string;
     password_confirmation: string;
+    group_number: string; // Added group_number field
+    adviser: string; // Added adviser field
 };
 
 export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
+    const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
+        group_number: '', // New field for group number
+        adviser: '', // New field for adviser
     });
 
     const submit: FormEventHandler = (e) => {
@@ -34,10 +39,10 @@ export default function Register() {
     return (
         <AuthLayout title="Create an account" description="Enter your details below to create your account">
             <Head title="Register" />
-            <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className="grid gap-6">
+            <form className="grid gap-6" onSubmit={submit}>
+                <div className="grid grid-cols-2 gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name">Full Name</Label>
                         <Input
                             id="name"
                             type="text"
@@ -101,12 +106,43 @@ export default function Register() {
                         <InputError message={errors.password_confirmation} />
                     </div>
 
-                    <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Create account
-                    </Button>
+                    <div className="grid gap-2">
+                        <Label htmlFor="group_number">Group Number</Label>
+                        <Input
+                            id="group_number"
+                            type="text"
+                            required
+                            value={data.group_number}
+                            onChange={(e) => setData('group_number', e.target.value)}
+                            disabled={processing}
+                            placeholder="Enter group number"
+                        />
+                        <InputError message={errors.group_number} className="mt-2" />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="adviser">Adviser</Label>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="w-full justify-start text-left">
+                                    {data.adviser || 'Select adviser'}
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start">
+                                <DropdownMenuLabel>Select adviser</DropdownMenuLabel>
+                                <DropdownMenuItem onClick={() => setData('adviser', 'Adviser 1')}>Adviser 1</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setData('adviser', 'Adviser 2')}>Adviser 2</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setData('adviser', 'Adviser 3')}>Adviser 3</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <InputError message={errors.adviser} className="mt-2" />
+                    </div>
                 </div>
 
+                <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
+                    {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                    Create account
+                </Button>
                 <div className="text-muted-foreground text-center text-sm">
                     Already have an account?{' '}
                     <TextLink href={route('login')} tabIndex={6}>

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Group;
 
 class RegisteredUserController extends Controller
 {
@@ -32,20 +33,25 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|confirmed|min:8',
+            'group_number' => 'required|string|unique:groups,group_number', // Validate group number
+            'adviser' => 'required|string', // Validate adviser
         ]);
 
-        $user = User::create([
+        // Create the group
+        Group::create([
+            'group_number' => $request->group_number,
+            'adviser' => $request->adviser,
+        ]);
+
+        // Create the user
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return to_route('dashboard');
+        return redirect()->route('dashboard')->with('success', 'Registration successful!');
     }
 }
