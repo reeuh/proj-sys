@@ -1,96 +1,120 @@
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import axios from 'axios';
-import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Capstone',
-        href: '/students/capstone',
+        href: '/students/capstones',
     },
 ];
 
-const Capstone = () => {
-    const { capstoneData } = usePage().props as unknown as { capstoneData: any };
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+const capstoneData = {
+    groups: [
+        {
+            group_name: 'Group 1',
+            adviser: 'Adviser 1',
+            members: [],
+            title: [],
+        },
+    ],
+};
 
-    function handleFileChange(event: React.ChangeEvent<HTMLInputElement>, title: string): void {
-        const file = event.target.files?.[0] || null;
-        if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('title', title);
+function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>, title: string, groupId: number): void {
+    const file = event.target.files?.[0];
+    if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('title', title);
+        formData.append('group_id', groupId.toString());
 
-            axios.post('/students/capstone/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-            .then((response) => {
-                alert(response.data.message);
-            })
-            .catch((error) => {
-                console.error(error);
-                alert('File upload failed!');
-            });
-        }
+        axios.post('/files/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        .then((response) => {
+            alert(response.data.message);
+        })
+        .catch((error) => {
+            console.error(error);
+            alert('File upload failed!');
+        });
     }
+}
 
+const Capstone = () => {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Capstone" />
-            <div className="flex h-full flex-1 flex-col gap-2 rounded-xl">
-                <div className="flex flex-col gap-2 rounded-xl p-4">
-                    {capstoneData.groups.map((group: any, groupIndex: number) => (
-                        <div key={groupIndex} className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4">
-                            <div className="flex flex-col gap-2">
-                                <h2 className="mb-2 text-xl font-semibold">{group.group_name}</h2>
-                                <p className="mb-4">Adviser: {group.adviser}</p>
-                            </div>
-
-                            <div className="border-t pt-4">
-                                <h3 className="mb-2 font-medium">Members</h3>
-                                <ul className="list-inside list-disc">
-                                    {group.members.map((member: string, memberIndex: number) => (
-                                        <li key={memberIndex}>{member}</li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            <div className="mb-4 pt-4 border-b">
-                                <h2 className="text-xl font-semibold">Titles</h2>
-                            </div>
-
-                            {group.titles.map((title: any, titleIndex: number) => (
-                                <div key={titleIndex} className="mb-4">
-                                    <p className="mb-2">{title.title}</p>
-                                    <div className="flex items-center space-x-4">
-                                        <div className="flex-1">
-                                            <p className="text-sm">Current File: {title.file_path}</p>
-                                        </div>
-                                    </div>
-                                    <div className="mt-2 flex items-center space-x-4">
-                                        <label className="cursor-pointer rounded bg-blue-600 px-4 py-1 text-white hover:bg-blue-700">
-                                            Choose File
-                                            <input
-                                                type="file"
-                                                className="hidden"
-                                                onChange={(e) => handleFileChange(e, title.title)}
-                                            />
-                                        </label>
-                                        <span className="ml-2 text-sm text-gray-500">{selectedFile ? selectedFile.name : 'No file chosen'}</span>
-                                    </div>
-                                    <div className="mt-2 flex items-center space-x-4">
-                                        <Button variant="outline" className="min-w-60 bg-blue-700">
-                                            Submit
-                                        </Button>
-                                    </div>
-                                </div>
-                            ))}
+            <div className="flex h-full flex-1 flex-col gap-2rounded-xl p-4">
+                {capstoneData.groups.map((group: any, groupIndex: number) => (
+                    <div key={groupIndex} className="rounded-xl border p-4">
+                        <div className="flex flex-col gap-2">
+                            <h2 className="mb-2 text-xl font-semibold">{group.group_name}</h2>
+                            <p className="mb-4">Adviser: {group.adviser}</p>
                         </div>
-                    ))}
+                    </div>
+                ))}
+                <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+                        <h3 className="mb-2 font-medium">Members:</h3>
+                        <ul className="list-disc pl-5">
+                            {/* Replace with actual member data */}
+                            <li>Member 1</li>
+                            <li>Member 2</li>
+                            <li>Member 3</li>
+                        </ul>
+                    {/* TITLES */}
+                    <div className="flex-col-3 flex border-t pt-4 pb-2">
+                        <h3 className="mb-2 pb-5 font-medium">Titles</h3>
+                        <div className="flex-col-3 flex gap-2 pt-8">
+                            <div className="grid w-full gap-2">
+                                <Label htmlFor="title" className="mb-2 pl-2 border px-3 py-2 rounded-lg">
+                                    Title 1
+                                </Label>
+                                <p>Current File:</p>
+                                <input
+                                    type="file"
+                                    className="file:mr-4 file:rounded-full file:border-0 file:bg-blue-700 file:px-4 file:py-2 file:text-sm"
+                                    placeholder="Title"
+                                />
+                                <Button>Submit</Button>
+                                <p>Adviser Comment:</p>
+                                <p>File Attachment:</p>
+                            </div>
+                            <div className="grid w-full gap-2 ">
+                                <Label htmlFor="title" className="mb-2 pl-2 border px-3 py-2 rounded-lg">
+                                    Title 2
+                                </Label>
+                                <p>Current File:</p>
+                                <input
+                                    type="file"
+                                    className="file:mr-4 file:rounded-full file:border-0 file:bg-blue-700 file:px-4 file:py-2 file:text-sm"
+                                    placeholder="Title"
+                                />
+                                <Button>Submit</Button>
+                                <p>Adviser Comment:</p>
+                                <p>File Attachment:</p>
+                            </div>
+                            <div className="grid w-full gap-2">
+                                <Label htmlFor="title" className="mb-2 pl-2 border px-3 py-2 rounded-lg">
+                                    Title 3
+                                </Label>
+                                <p>Curreny File:</p>
+                                <input
+                                    type="file"
+                                    className="file:mr-4 file:rounded-full file:border-0 file:bg-blue-700 file:px-4 file:py-2 file:text-sm"
+                                    placeholder="Title"
+                                />
+                                <Button>Submit</Button>
+                                <p>Adviser Comment:</p>
+                                <p>File Attachment:</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </AppLayout>

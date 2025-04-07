@@ -30,9 +30,21 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('login'), {
-            onFinish: () => reset('password'),
-        });
+
+        // Check if the user is a faculty member
+        const isFaculty = data.email.endsWith('@zppsu.edu.ph');
+
+        if (isFaculty) {
+            // Redirect to faculty login route
+            post(route('faculty.login'), {
+                onFinish: () => reset('password'),
+            });
+        } else {
+            // Proceed with the default login
+            post(route('login'), {
+                onFinish: () => reset('password'),
+            });
+        }
     };
 
     return (
@@ -53,6 +65,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="email@example.com"
+                            
                         />
                         <InputError message={errors.email} />
                     </div>
@@ -75,6 +88,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder="Password"
+                            
                         />
                         <InputError message={errors.password} />
                     </div>
@@ -96,7 +110,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </Button>
                 </div>
 
-                <div className="text-muted-foreground text-center text-sm">
+                <div className="text-center text-sm text-white">
                     Don't have an account?{' '}
                     <TextLink href={route('register')} tabIndex={5}>
                         Sign up

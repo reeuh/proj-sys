@@ -31,7 +31,7 @@ class StudentCapstoneController extends Controller
     {
         $request->validate([
             'file' => 'required|file|mimes:pdf,doc,docx|max:2048', // Validate file type and size
-            'title' => 'required|string',
+            'title' => 'required|string|max255', // Validate title
         ]);
 
         // Store the uploaded file

@@ -70,6 +70,7 @@ export default function Register() {
                             onChange={(e) => setData('email', e.target.value)}
                             disabled={processing}
                             placeholder="email@example.com"
+                            
                         />
                         <InputError message={errors.email} />
                     </div>
@@ -86,6 +87,7 @@ export default function Register() {
                             onChange={(e) => setData('password', e.target.value)}
                             disabled={processing}
                             placeholder="Password"
+                           
                         />
                         <InputError message={errors.password} />
                     </div>
@@ -102,6 +104,7 @@ export default function Register() {
                             onChange={(e) => setData('password_confirmation', e.target.value)}
                             disabled={processing}
                             placeholder="Confirm password"
+                            
                         />
                         <InputError message={errors.password_confirmation} />
                     </div>
@@ -116,6 +119,7 @@ export default function Register() {
                             onChange={(e) => setData('group_number', e.target.value)}
                             disabled={processing}
                             placeholder="Enter group number"
+                            
                         />
                         <InputError message={errors.group_number} className="mt-2" />
                     </div>
@@ -124,7 +128,7 @@ export default function Register() {
                         <Label htmlFor="adviser">Adviser</Label>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="w-full justify-start text-left">
+                                <Button variant="outline" className="w-full justify-start text-left bg-white text-black">
                                     {data.adviser || 'Select adviser'}
                                 </Button>
                             </DropdownMenuTrigger>
@@ -143,7 +147,7 @@ export default function Register() {
                     {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                     Create account
                 </Button>
-                <div className="text-muted-foreground text-center text-sm">
+                <div className="text-center text-sm text-white">
                     Already have an account?{' '}
                     <TextLink href={route('login')} tabIndex={6}>
                         Log in

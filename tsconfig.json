@@ -110,7 +110,9 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["./resources/js/*"],
-            "ziggy-js": ["./vendor/tightenco/ziggy"]
+            "ziggy-js": ["./vendor/tightenco/ziggy"],
+            "@tailus-ui/*": ["/components/tailus-ui/*"],
+            "@lib/*": ["/lib/*"],
         },
         "jsx": "react-jsx"
     },
@@ -119,4 +121,5 @@
         "resources/js/**/*.d.ts",
         "resources/js/**/*.tsx",
     ]
+    
 }
